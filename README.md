@@ -283,24 +283,26 @@ day-trader-india/
 ### 9. `trader-risk` (SEBI Risk & Tax Guard)
 * **Purpose:** Audits the order ticket against Indian regulatory rules and calculates exact statutory taxes.
 * **Commands:**
-  * `python3 trader-risk/check.py check`  
+  * `python3 trader-risk/check.py check` (or `audit`)  
     Evaluates:
     * **Time Window:** Blocks trades initiated after **14:30 IST**.
     * **Taxes:** Computes STT, GST, Exchange turnover fees, Stamp duty, and Brokerage.
     * **Breakeven Spread:** Rupee-per-share gain needed to cover charges.
     * **Verdict:** Yields a strict `PASS` or `BLOCK`.
+  * `python3 trader-risk/check.py charges --val 100000`  
+    Provides an instant itemized statutory charge breakdown for any custom intraday turnover.
 
 ---
 
 ### 10. `trader-broker` (Order Ticket & Paper Simulator)
 * **Purpose:** Previews broker-ready MIS order tickets and maintains a safe local paper trading ledger.
 * **Commands:**
-  * `python3 trader-broker/ticket.py preview`  
+  * `python3 trader-broker/ticket.py preview` (or `ticket`)  
     Displays formatted MIS bracket order ticket matching Zerodha Kite / Dhan / Angel One.
   * `python3 trader-broker/ticket.py paper`  
     Executes a simulated paper order and records the open position in `trader/trades.json`.
-  * `python3 trader-broker/ticket.py pnl`  
-    Views open positions, stop-loss, and target status.
+  * `python3 trader-broker/ticket.py pnl` (or `portfolio`)  
+    Fetches real-time market prices for active positions and displays live unrealized profit/loss in ₹ and % with visual green/red status tags.
 
 ---
 
