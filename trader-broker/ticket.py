@@ -14,9 +14,12 @@ import json
 import os
 import sys
 import time
+import urllib.parse
+import urllib.request
 from datetime import datetime, timezone, timedelta
 
 IST = timezone(timedelta(hours=5, minutes=30))
+UA = "Mozilla/5.0 (compatible; day-trader-india/1.0; +https://github.com/kapish/day-trader-india)"
 
 
 def get_trader_dir():
@@ -97,6 +100,19 @@ def cmd_paper():
     print(f"  Logged to {trades_file}\n")
 
 
+def get_live_price(symbol):
+    try:
+        encoded = urllib.parse.quote(symbol)
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{encoded}?interval=1m&range=1d"
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            meta = data["chart"]["result"][0]["meta"]
+            return meta.get("regularMarketPrice")
+    except Exception:
+        return None
+
+
 def cmd_pnl():
     trader_dir = get_trader_dir()
     trades_file = os.path.join(trader_dir, "trades.json")
@@ -107,25 +123,53 @@ def cmd_pnl():
     with open(trades_file, "r", encoding="utf-8") as f:
         trades = json.load(f)
 
-    print(f"\n{'='*64}\n  PAPER TRADING PORTFOLIO & INTRADAY LEDGER\n{'='*64}")
-    total_realized = 0.0
+    if not trades:
+        print("No paper trades executed yet.")
+        return
+
+    print(f"\n{'='*72}\n  PAPER TRADING PORTFOLIO & REAL-TIME INTRADAY LEDGER\n{'='*72}")
+    total_unrealized = 0.0
     for t in trades:
-        print(f"  [{t['id']}] {t['symbol']:12} {t['direction']:5} | {t['quantity']:4d} shares @ ₹{t['entry_price']}")
-        print(f"    SL: ₹{t['stop_loss']} | TGT: ₹{t['target']} | Status: {t['status']}")
-    print(f"{'='*64}\n")
+        sym = t["symbol"]
+        qty = t["quantity"]
+        entry = t["entry_price"]
+        direction = t.get("direction", "LONG")
+        status = t.get("status", "OPEN")
+
+        curr_price = get_live_price(sym) if status == "OPEN" else None
+        price_display = f"₹{curr_price:.2f}" if curr_price is not None else "N/A"
+
+        pnl_str = ""
+        if curr_price is not None and status == "OPEN":
+            diff = (curr_price - entry) if direction == "LONG" else (entry - curr_price)
+            unrealized = diff * qty
+            pct = (diff / entry) * 100 if entry else 0.0
+            total_unrealized += unrealized
+            tag = "🟢 PROFIT" if unrealized >= 0 else "🔴 LOSS"
+            sign = "+" if unrealized >= 0 else ""
+            pnl_str = f" | Live P&L: {sign}₹{unrealized:,.2f} ({sign}{pct:.2f}%) [{tag}]"
+
+        print(f"  [{t['id']}] {sym:12} {direction:5} | {qty:4d} shs @ ₹{entry:.2f} -> Now: {price_display}{pnl_str}")
+        print(f"    Stop: ₹{t['stop_loss']} | Target: ₹{t['target']} | Status: {status}")
+
+    sign_tot = "+" if total_unrealized >= 0 else ""
+    tot_tag = "🟢 IN PROFIT" if total_unrealized >= 0 else "🔴 IN LOSS"
+    print(f"  ----------------------------------------------------------------------")
+    print(f"  Total Active Portfolio P&L: {sign_tot}₹{total_unrealized:,.2f} [{tot_tag}]")
+    print(f"{'='*72}\n")
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         return
 
-    cmd = sys.argv[1].lower()
-    if cmd == "preview":
+    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "preview"
+    if cmd in ("preview", "ticket", "order", "show"):
         cmd_preview()
-    elif cmd == "paper":
+    elif cmd in ("paper", "execute", "buy", "fill"):
         cmd_paper()
-    elif cmd == "pnl":
+    elif cmd in ("pnl", "ledger", "positions", "portfolio"):
         cmd_pnl()
     else:
         print(f"Unknown command: {cmd}\n{__doc__}")

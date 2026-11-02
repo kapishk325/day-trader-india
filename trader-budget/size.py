@@ -25,6 +25,36 @@ def get_trader_dir():
     return "trader"
 
 
+def calculate_position_size(symbol, direction, entry, stop, target, risk_per_share, max_risk_inr=1000.0, total_capital_inr=50000.0):
+    if risk_per_share <= 0:
+        raise ValueError("Invalid risk per share")
+
+    qty = int(max_risk_inr // risk_per_share)
+    if qty < 1:
+        qty = 1
+
+    total_trade_val = round(qty * entry, 2)
+    margin_required = round(total_trade_val / MIS_LEVERAGE, 2)
+    actual_risk = round(qty * risk_per_share, 2)
+    potential_profit = round(qty * (target - entry if direction == "LONG" else entry - target), 2)
+
+    return {
+        "symbol": symbol,
+        "direction": direction,
+        "product_type": "MIS (Intraday)",
+        "quantity": qty,
+        "entry_price": entry,
+        "stop_loss": stop,
+        "target": target,
+        "total_value_inr": total_trade_val,
+        "margin_required_inr": margin_required,
+        "max_risk_inr": actual_risk,
+        "potential_profit_inr": potential_profit,
+        "capital_inr": total_capital_inr,
+        "margin_utilization_pct": round((margin_required / total_capital_inr) * 100, 2) if total_capital_inr > 0 else 0.0
+    }
+
+
 def cmd_size(max_risk_inr=1000.0, total_capital_inr=50000.0):
     trader_dir = get_trader_dir()
     plan_path = os.path.join(trader_dir, "plan.json")
@@ -42,43 +72,24 @@ def cmd_size(max_risk_inr=1000.0, total_capital_inr=50000.0):
     symbol = plan["symbol"]
     direction = plan.get("direction", "LONG")
 
-    if risk_per_share <= 0:
-        print("Invalid risk per share in plan.")
-        return
-
-    # Calculate exact quantity
-    qty = int(max_risk_inr // risk_per_share)
-    if qty < 1:
-        qty = 1
-
-    total_trade_val = round(qty * entry, 2)
-    margin_required = round(total_trade_val / MIS_LEVERAGE, 2)
-    actual_risk = round(qty * risk_per_share, 2)
-    potential_profit = round(qty * (target - entry if direction == "LONG" else entry - target), 2)
-
-    order = {
-        "symbol": symbol,
-        "direction": direction,
-        "product_type": "MIS (Intraday)",
-        "quantity": qty,
-        "entry_price": entry,
-        "stop_loss": stop,
-        "target": target,
-        "total_value_inr": total_trade_val,
-        "margin_required_inr": margin_required,
-        "max_risk_inr": actual_risk,
-        "potential_profit_inr": potential_profit,
-        "capital_inr": total_capital_inr,
-        "margin_utilization_pct": round((margin_required / total_capital_inr) * 100, 2)
-    }
+    order = calculate_position_size(
+        symbol=symbol,
+        direction=direction,
+        entry=entry,
+        stop=stop,
+        target=target,
+        risk_per_share=risk_per_share,
+        max_risk_inr=max_risk_inr,
+        total_capital_inr=total_capital_inr
+    )
 
     print(f"\n{'='*56}\n  POSITION SIZING REPORT (SEBI 5x MIS LEVERAGE)\n{'='*56}")
     print(f"  Symbol             : {symbol} ({direction})")
-    print(f"  Quantity to Trade  : {qty} shares")
-    print(f"  Total Trade Value  : ₹{total_trade_val:,}")
-    print(f"  Margin Required    : ₹{margin_required:,}  ({order['margin_utilization_pct']}% of capital)")
-    print(f"  Max Rupee Risk     : ₹{actual_risk:,}")
-    print(f"  Target Profit      : ₹{potential_profit:,}")
+    print(f"  Quantity to Trade  : {order['quantity']} shares")
+    print(f"  Total Trade Value  : ₹{order['total_value_inr']:,}")
+    print(f"  Margin Required    : ₹{order['margin_required_inr']:,}  ({order['margin_utilization_pct']}% of capital)")
+    print(f"  Max Rupee Risk     : ₹{order['max_risk_inr']:,}")
+    print(f"  Target Profit      : ₹{order['potential_profit_inr']:,}")
     print(f"{'='*56}\n")
 
     out_file = os.path.join(trader_dir, "order.json")

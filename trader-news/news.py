@@ -102,22 +102,26 @@ def cmd_monitor():
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         return
 
-    cmd = sys.argv[1].lower()
-    if cmd == "market":
+    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "market"
+    if cmd in ("market", "top", "headlines", "latest"):
         cmd_market()
-    elif cmd == "symbol":
+    elif cmd in ("symbol", "stock"):
         sym = "NIFTY"
         if "--symbol" in sys.argv:
             idx = sys.argv.index("--symbol")
             if idx + 1 < len(sys.argv):
                 sym = sys.argv[idx + 1]
+        elif len(sys.argv) > 2 and not sys.argv[2].startswith("-"):
+            sym = sys.argv[2]
         cmd_symbol(sym)
-    elif cmd == "monitor":
+    elif cmd in ("monitor", "watchlist"):
         cmd_monitor()
+    elif not cmd.startswith("-"):
+        cmd_symbol(cmd)
     else:
         print(f"Unknown command: {cmd}\n{__doc__}")
 

@@ -324,11 +324,11 @@ def cmd_indices(args):
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         return
 
-    cmd = sys.argv[1].lower()
+    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "indices"
     args = sys.argv[2:]
 
     if cmd == "universe":
@@ -337,7 +337,7 @@ def main():
         cmd_daily(args)
     elif cmd == "orb":
         cmd_orb(args)
-    elif cmd == "indices":
+    elif cmd in ("indices", "dashboard", "overview", "market", "benchmarks"):
         cmd_indices(args)
     else:
         print(f"Unknown command: {cmd}\n{__doc__}")

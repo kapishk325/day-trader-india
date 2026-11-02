@@ -181,19 +181,31 @@ def cmd_check():
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         return
-    cmd = sys.argv[1].lower()
-    if cmd == "watch":
+
+    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "check"
+    if cmd in ("watch", "eval", "evaluate", "symbol"):
         sym = "RELIANCE.NS"
         if "--symbol" in sys.argv:
             idx = sys.argv.index("--symbol")
             if idx + 1 < len(sys.argv):
                 sym = sys.argv[idx + 1]
+        elif len(sys.argv) > 2 and not sys.argv[2].startswith("-"):
+            sym = sys.argv[2]
+
+        sym = sym.upper()
+        if not sym.endswith(".NS") and not sym.endswith(".BO") and not sym.startswith("^"):
+            sym = f"{sym}.NS"
         cmd_watch(sym)
-    elif cmd == "check":
+    elif cmd in ("check", "scan", "orb"):
         cmd_check()
+    elif not cmd.startswith("-"):
+        sym = cmd.upper()
+        if not sym.endswith(".NS") and not sym.endswith(".BO") and not sym.startswith("^"):
+            sym = f"{sym}.NS"
+        cmd_watch(sym)
     else:
         print(f"Unknown command: {cmd}\n{__doc__}")
 

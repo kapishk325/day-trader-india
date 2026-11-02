@@ -174,24 +174,24 @@ def cmd_summary():
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         return
 
-    cmd = sys.argv[1].lower()
+    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "summary"
     symbol = "NIFTY"
     if "--symbol" in sys.argv:
         idx = sys.argv.index("--symbol")
         if idx + 1 < len(sys.argv):
             symbol = sys.argv[idx + 1].upper()
+    elif len(sys.argv) > 2 and not sys.argv[2].startswith("-"):
+        symbol = sys.argv[2].upper()
 
-    if cmd == "vix":
+    if cmd in ("vix", "volatility"):
         cmd_vix()
-    elif cmd == "pcr":
+    elif cmd in ("pcr", "ratio", "chain", "options", "derivatives"):
         cmd_pcr(symbol)
-    elif cmd == "chain":
-        cmd_pcr(symbol)
-    elif cmd == "summary":
+    elif cmd in ("summary", "overview", "oi"):
         cmd_summary()
     else:
         print(f"Unknown command: {cmd}\n{__doc__}")

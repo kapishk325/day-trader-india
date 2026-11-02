@@ -118,12 +118,52 @@ def cmd_check():
     return 0 if passed else 1
 
 
+def cmd_charges(trade_value):
+    """Breakdown of Indian transaction charges for an intraday round trip."""
+    buy_value = trade_value
+    sell_value = trade_value
+    charges = calculate_indian_charges(buy_value, sell_value)
+    turnover = buy_value + sell_value
+    print(f"\n{'='*56}\n  INDIAN TRANSACTION CHARGES (INTRADAY ROUND-TRIP)\n{'='*56}")
+    print(f"  Trade Value (Each Leg) : ₹{trade_value:,.2f}")
+    print(f"  Total Turnover (2 Legs): ₹{turnover:,.2f}")
+    print(f"  --------------------------------------------------------")
+    print(f"  Brokerage (₹20 x 2)    : ₹{charges['brokerage']:.2f}")
+    print(f"  STT (0.025% on Sell)   : ₹{charges['stt']:.2f}")
+    print(f"  Exchange Charges       : ₹{charges['exchange_charges']:.2f}")
+    print(f"  SEBI Turnover Fees     : ₹{charges['sebi_charges']:.2f}")
+    print(f"  Stamp Duty (0.003% Buy): ₹{charges['stamp_duty']:.2f}")
+    print(f"  GST (18% on fees)      : ₹{charges['gst']:.2f}")
+    print(f"  --------------------------------------------------------")
+    print(f"  TOTAL CHARGES & TAXES  : ₹{charges['total_charges']:.2f}  ({(charges['total_charges'] / turnover) * 100:.3f}% of turnover)")
+    print(f"{'='*56}\n")
+
+
 def main():
-    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "check"
-    if cmd == "check":
-        sys.exit(cmd_check())
-    else:
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(__doc__)
+        return
+
+    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "check"
+    if cmd in ("check", "audit", "verify", "validate"):
+        sys.exit(cmd_check())
+    elif cmd in ("charges", "fees", "tax", "breakdown"):
+        val = 100000.0
+        if "--val" in sys.argv:
+            idx = sys.argv.index("--val")
+            if idx + 1 < len(sys.argv):
+                try:
+                    val = float(sys.argv[idx + 1])
+                except ValueError:
+                    val = 100000.0
+        elif len(sys.argv) > 2 and not sys.argv[2].startswith("-"):
+            try:
+                val = float(sys.argv[2])
+            except ValueError:
+                val = 100000.0
+        cmd_charges(val)
+    else:
+        print(f"Unknown command: {cmd}\n{__doc__}")
 
 
 if __name__ == "__main__":

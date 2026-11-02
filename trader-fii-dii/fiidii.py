@@ -175,16 +175,16 @@ def cmd_summary():
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         return
 
-    cmd = sys.argv[1].lower()
-    if cmd == "flows":
+    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "flows"
+    if cmd in ("flows", "fii", "dii", "cash", "institutional"):
         cmd_flows()
-    elif cmd == "deals":
+    elif cmd in ("deals", "bulk", "block", "large"):
         cmd_deals()
-    elif cmd == "summary":
+    elif cmd in ("summary", "overview", "sentiment"):
         cmd_summary()
     else:
         print(f"Unknown command: {cmd}\n{__doc__}")

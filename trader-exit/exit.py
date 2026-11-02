@@ -100,12 +100,12 @@ def cmd_plan():
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         return
 
-    cmd = sys.argv[1].lower()
-    if cmd == "plan":
+    cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "plan"
+    if cmd in ("plan", "calc", "target", "targets", "stop"):
         cmd_plan()
     else:
         print(f"Unknown command: {cmd}\n{__doc__}")

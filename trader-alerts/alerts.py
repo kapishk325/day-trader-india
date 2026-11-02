@@ -85,8 +85,12 @@ def cmd_check():
 
 
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
+        print(__doc__)
+        return
+
     cmd = sys.argv[1].lower() if len(sys.argv) > 1 else "check"
-    if cmd == "check":
+    if cmd in ("check", "monitor", "status", "watch", "run"):
         cmd_check()
     else:
         print(__doc__)

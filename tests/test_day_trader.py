@@ -24,9 +24,30 @@ from exit import calculate_exit
 from check import calculate_indian_charges
 from oi import compute_pcr
 from timemachine import run_monte_carlo
+from size import calculate_position_size
 
 
 class TestDayTraderIndia(unittest.TestCase):
+
+    def test_position_sizing_sebi_5x(self):
+        """Test position sizing under SEBI 5x MIS margin rules."""
+        # Risk per share: ₹10, Max risk: ₹1,500 => Quantity = 150 shares
+        order = calculate_position_size(
+            symbol="INFY.NS",
+            direction="LONG",
+            entry=1500.0,
+            stop=1490.0,
+            target=1515.0,
+            risk_per_share=10.0,
+            max_risk_inr=1500.0,
+            total_capital_inr=50000.0
+        )
+        self.assertEqual(order["quantity"], 150)
+        self.assertEqual(order["total_value_inr"], 225000.0) # 150 * 1500
+        self.assertEqual(order["margin_required_inr"], 45000.0) # 225000 / 5x
+        self.assertEqual(order["margin_utilization_pct"], 90.0) # 45k / 50k = 90%
+        self.assertEqual(order["max_risk_inr"], 1500.0)
+        self.assertEqual(order["potential_profit_inr"], 2250.0) # 150 * 15
 
     def test_rsi_14(self):
         """Test RSI 14 calculation with trending and oversold closes."""
