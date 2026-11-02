@@ -1,0 +1,13 @@
+{
+  "symbol": "RELIANCE.NS",
+  "status": "TRIGGERED",
+  "direction": "LONG",
+  "entry_price": 1234.5,
+  "trigger_time": "09:30",
+  "orb_high": 1231.6,
+  "orb_low": 1214.6,
+  "orb_midpoint": 1223.1,
+  "vwap": 1240.13,
+  "vwap_confirmed": false,
+  "volume_confirmed": true
+}
