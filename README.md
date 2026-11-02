@@ -2,6 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Market-NSE%20%2F%20BSE%20(India)-FF9933?style=for-the-badge&logo=bharatpe&logoColor=white" alt="Indian Market" />
+  <a href="https://github.com/kapishk325/day-trader-india/stargazers"><img src="https://img.shields.io/github/stars/kapishk325/day-trader-india?style=for-the-badge&logo=github&color=gold" alt="GitHub Stars" /></a>
   <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge" alt="Apache 2.0" />
   <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3" />
   <img src="https://img.shields.io/badge/Cost-100%25%20Free%20%2F%20Zero%20API%20Key-00C853?style=for-the-badge" alt="Zero Cost" />
