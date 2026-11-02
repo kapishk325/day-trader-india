@@ -18,11 +18,18 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 UA = "Mozilla/5.0 (compatible; day-trader-india/1.0; +https://github.com/kapish/day-trader-india)"
-TRADER_DIR = "trader"
+def get_trader_dir():
+    if "TRADER_DIR" in os.environ:
+        return os.environ["TRADER_DIR"]
+    if os.path.exists("trader"):
+        return "trader"
+    elif os.path.exists("../trader"):
+        return "../trader"
+    return "trader"
 
 
 def ensure_trader_dir():
-    os.makedirs(TRADER_DIR, exist_ok=True)
+    os.makedirs(get_trader_dir(), exist_ok=True)
 
 
 def fetch_rss(query, limit=10):
@@ -70,7 +77,8 @@ def cmd_symbol(symbol):
 
 def cmd_monitor():
     ensure_trader_dir()
-    wl_path = os.path.join(TRADER_DIR, "watchlist.json")
+    trader_dir = get_trader_dir()
+    wl_path = os.path.join(trader_dir, "watchlist.json")
     symbols = []
     if os.path.exists(wl_path):
         with open(wl_path, "r", encoding="utf-8") as f:
@@ -87,7 +95,7 @@ def cmd_monitor():
         news_map[sym] = stories
         time.sleep(0.2)
 
-    out_file = os.path.join(TRADER_DIR, "news.json")
+    out_file = os.path.join(trader_dir, "news.json")
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(news_map, f, indent=2)
     print(f"Saved monitored headlines to {out_file}")

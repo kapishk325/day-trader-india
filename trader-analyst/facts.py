@@ -70,11 +70,16 @@ def cmd_info(symbol):
 
 
 def main():
+    if "-h" in sys.argv or "--help" in sys.argv:
+        print(__doc__)
+        return
     sym = "TCS.NS"
     if "--symbol" in sys.argv:
         idx = sys.argv.index("--symbol")
         if idx + 1 < len(sys.argv):
             sym = sys.argv[idx + 1]
+    elif len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
+        sym = sys.argv[1]
     cmd_info(sym)
 
 

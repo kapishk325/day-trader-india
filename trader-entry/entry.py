@@ -18,11 +18,18 @@ from datetime import datetime, timezone, timedelta
 
 IST = timezone(timedelta(hours=5, minutes=30))
 UA = "Mozilla/5.0 (compatible; day-trader-india/1.0; +https://github.com/kapish/day-trader-india)"
-TRADER_DIR = "trader"
+def get_trader_dir():
+    if "TRADER_DIR" in os.environ:
+        return os.environ["TRADER_DIR"]
+    if os.path.exists("trader"):
+        return "trader"
+    elif os.path.exists("../trader"):
+        return "../trader"
+    return "trader"
 
 
 def ensure_trader_dir():
-    os.makedirs(TRADER_DIR, exist_ok=True)
+    os.makedirs(get_trader_dir(), exist_ok=True)
 
 
 def get_5m_bars(symbol):
@@ -136,7 +143,8 @@ def cmd_watch(symbol):
         print(f"  15m Range     : High ₹{res['orb_high']} | Low ₹{res['orb_low']}")
         print(f"  VWAP          : ₹{res['vwap']} (Aligned: {res['vwap_confirmed']})")
         print(f"  Volume Surge  : {res['volume_confirmed']}")
-        out_file = os.path.join(TRADER_DIR, "setup.json")
+        trader_dir = get_trader_dir()
+        out_file = os.path.join(trader_dir, "setup.json")
         with open(out_file, "w", encoding="utf-8") as f:
             json.dump(res, f, indent=2)
         print(f"  ✓ Saved triggered setup to {out_file}")
@@ -148,7 +156,8 @@ def cmd_watch(symbol):
 
 def cmd_check():
     ensure_trader_dir()
-    orb_path = os.path.join(TRADER_DIR, "orb_candidates.json")
+    trader_dir = get_trader_dir()
+    orb_path = os.path.join(trader_dir, "orb_candidates.json")
     if not os.path.exists(orb_path):
         print("No orb_candidates.json found. Run trader-scanner orb first.")
         return
@@ -165,7 +174,7 @@ def cmd_check():
         time.sleep(0.1)
 
     if triggered:
-        out_file = os.path.join(TRADER_DIR, "setup.json")
+        out_file = os.path.join(trader_dir, "setup.json")
         with open(out_file, "w", encoding="utf-8") as f:
             json.dump(triggered[0], f, indent=2)
         print(f"\nSaved primary setup to {out_file}")

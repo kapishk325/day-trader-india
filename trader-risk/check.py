@@ -24,6 +24,8 @@ GST_RATE = 0.18             # 18% on (brokerage + exchange charges + sebi fees)
 
 
 def get_trader_dir():
+    if "TRADER_DIR" in os.environ:
+        return os.environ["TRADER_DIR"]
     if os.path.exists("trader"):
         return "trader"
     elif os.path.exists("../trader"):

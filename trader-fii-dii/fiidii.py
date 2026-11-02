@@ -15,11 +15,18 @@ import subprocess
 import sys
 import time
 
-TRADER_DIR = "trader"
+def get_trader_dir():
+    if "TRADER_DIR" in os.environ:
+        return os.environ["TRADER_DIR"]
+    if os.path.exists("trader"):
+        return "trader"
+    elif os.path.exists("../trader"):
+        return "../trader"
+    return "trader"
 
 
 def ensure_trader_dir():
-    os.makedirs(TRADER_DIR, exist_ok=True)
+    os.makedirs(get_trader_dir(), exist_ok=True)
 
 
 def nse_curl(url, referer="https://www.nseindia.com/"):
@@ -158,7 +165,8 @@ def cmd_summary():
     except Exception as e:
         print(f"Notice: Large deals warning ({e})")
 
-    out_file = os.path.join(TRADER_DIR, "fiidii.json")
+    trader_dir = get_trader_dir()
+    out_file = os.path.join(trader_dir, "fiidii.json")
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
 

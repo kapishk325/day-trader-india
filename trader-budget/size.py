@@ -16,6 +16,8 @@ MIS_LEVERAGE = 5.0  # SEBI Peak Intraday Margin allows max 5x for equity cash
 
 
 def get_trader_dir():
+    if "TRADER_DIR" in os.environ:
+        return os.environ["TRADER_DIR"]
     if os.path.exists("trader"):
         return "trader"
     elif os.path.exists("../trader"):

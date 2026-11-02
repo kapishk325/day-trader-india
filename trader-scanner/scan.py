@@ -23,7 +23,6 @@ IST = timezone(timedelta(hours=5, minutes=30))
 UA = "Mozilla/5.0 (compatible; day-trader-india/1.0; +https://github.com/kapish/day-trader-india)"
 YAHOO_HOSTS = ("https://query1.finance.yahoo.com", "https://query2.finance.yahoo.com")
 NSE_NIFTY100_URL = "https://archives.nseindia.com/content/indices/ind_nifty100list.csv"
-TRADER_DIR = "trader"
 
 # Curated fallback of top liquid NSE stocks if network is offline
 FALLBACK_UNIVERSE = [
@@ -35,9 +34,18 @@ FALLBACK_UNIVERSE = [
     "COALINDIA.NS", "BAJAJFINSV.NS", "M&M.NS", "JSWSTEEL.NS", "ASIANPAINT.NS"
 ]
 
+def get_trader_dir():
+    if "TRADER_DIR" in os.environ:
+        return os.environ["TRADER_DIR"]
+    if os.path.exists("trader"):
+        return "trader"
+    elif os.path.exists("../trader"):
+        return "../trader"
+    return "trader"
+
 
 def ensure_trader_dir():
-    os.makedirs(TRADER_DIR, exist_ok=True)
+    os.makedirs(get_trader_dir(), exist_ok=True)
 
 
 def http_get(url, timeout=15):
@@ -61,6 +69,7 @@ def yahoo_get(path, timeout=15):
 def cmd_universe(args):
     """Download official NSE Nifty 100 list and write to trader/universe.txt."""
     ensure_trader_dir()
+    trader_dir = get_trader_dir()
     symbols = []
     try:
         raw_csv = http_get(NSE_NIFTY100_URL)
@@ -74,7 +83,7 @@ def cmd_universe(args):
         print(f"[Universe] Notice: Could not reach NSE archives ({e}). Using liquid fallback universe.")
         symbols = FALLBACK_UNIVERSE
 
-    out_path = os.path.join(TRADER_DIR, "universe.txt")
+    out_path = os.path.join(trader_dir, "universe.txt")
     with open(out_path, "w", encoding="utf-8") as f:
         for s in symbols:
             f.write(f"{s}\n")
@@ -99,7 +108,9 @@ def rsi_14(closes):
         avg_loss = (avg_loss * 13 + losses[i]) / 14.0
     
     if avg_loss == 0:
-        return 100.0
+        return 100.0 if avg_gain > 0 else 50.0
+    if avg_gain == 0:
+        return 0.0
     rs = avg_gain / avg_loss
     return 100.0 - (100.0 / (1.0 + rs))
 
@@ -107,7 +118,8 @@ def rsi_14(closes):
 def cmd_daily(args):
     """Scan daily setups before the 09:15 IST opening bell."""
     ensure_trader_dir()
-    universe_path = os.path.join(TRADER_DIR, "universe.txt")
+    trader_dir = get_trader_dir()
+    universe_path = os.path.join(trader_dir, "universe.txt")
     if os.path.exists(universe_path):
         with open(universe_path, "r", encoding="utf-8") as f:
             symbols = [line.strip() for line in f if line.strip()]
@@ -186,7 +198,7 @@ def cmd_daily(args):
         except Exception:
             continue
 
-    out_file = os.path.join(TRADER_DIR, "watchlist.json")
+    out_file = os.path.join(trader_dir, "watchlist.json")
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(watchlist, f, indent=2)
     print(f"\n[Daily Scan] Found {len(watchlist)} candidates. Saved to {out_file}")
@@ -198,7 +210,8 @@ def cmd_orb(args):
     Breakout occurs when any subsequent bar closes above range high.
     """
     ensure_trader_dir()
-    wl_file = os.path.join(TRADER_DIR, "watchlist.json")
+    trader_dir = get_trader_dir()
+    wl_file = os.path.join(trader_dir, "watchlist.json")
     symbols = []
     if os.path.exists(wl_file):
         with open(wl_file, "r", encoding="utf-8") as f:
@@ -277,7 +290,7 @@ def cmd_orb(args):
         except Exception:
             continue
 
-    out_file = os.path.join(TRADER_DIR, "orb_candidates.json")
+    out_file = os.path.join(trader_dir, "orb_candidates.json")
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(candidates, f, indent=2)
     print(f"\n[ORB Scan] {len(candidates)} breakouts detected. Saved to {out_file}")
