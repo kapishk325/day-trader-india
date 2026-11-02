@@ -38,10 +38,22 @@ install_antigravity() {
         if [ -d "$SCRIPT_DIR/$s" ]; then
             rm -rf "$dest/$s"
             cp -r "$SCRIPT_DIR/$s" "$dest/$s"
-            echo "   ✓ Installed $s"
+            echo "   ✓ Installed $s to $dest"
             installed_count=$((installed_count + 1))
         fi
     done
+
+    if [ -d "$HOME/.gemini/skills" ]; then
+        local gemini_dest="$HOME/.gemini/skills"
+        echo "-> Also syncing to Google Antigravity CLI/IDE ($gemini_dest)..."
+        for s in "${SKILLS[@]}"; do
+            if [ -d "$SCRIPT_DIR/$s" ]; then
+                rm -rf "$gemini_dest/$s"
+                cp -r "$SCRIPT_DIR/$s" "$gemini_dest/$s"
+                echo "   ✓ Installed $s to $gemini_dest"
+            fi
+        done
+    fi
     echo "✓ Antigravity installation complete!"
 }
 

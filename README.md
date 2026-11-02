@@ -153,10 +153,18 @@ Auto-detects every installed harness on your machine and installs the skills eve
 
 ```bash
 # On Linux / macOS:
-git clone https://github.com/<your-username>/day-trader-india.git && cd day-trader-india && ./install.sh
+git clone https://github.com/kapishk325/day-trader-india.git && cd day-trader-india && ./install.sh
 
 # On Windows (PowerShell):
-git clone https://github.com/<your-username>/day-trader-india.git; cd day-trader-india; .\install.ps1
+git clone https://github.com/kapishk325/day-trader-india.git; cd day-trader-india; .\install.ps1
+```
+
+### Clean Uninstallation
+Whenever you want to remove all 12 skills and rules from your machine, simply run:
+
+```bash
+cd day-trader-india
+./uninstall.sh
 ```
 
 ---
