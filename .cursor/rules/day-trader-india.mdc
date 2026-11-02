@@ -1,0 +1,37 @@
+---
+description: Indian Stock Market Day Trading Tools & Skills (NSE/BSE)
+globs: "*"
+alwaysApply: false
+---
+
+# Day Trader India (Cursor Integration)
+
+When the user asks about day trading, Indian stock markets, NSE, Nifty, Bank Nifty,
+FII/DII data, option chain PCR, or intraday setups, use the specialized Python tools
+in this repository.
+
+## Command Reference
+
+| Action | Command | Output File |
+| :--- | :--- | :--- |
+| **Market Benchmarks** | `python3 trader-scanner/scan.py indices` | Terminal table |
+| **Download Universe** | `python3 trader-scanner/scan.py universe` | `trader/universe.txt` |
+| **Pre-Market Scan** | `python3 trader-scanner/scan.py daily` | `trader/watchlist.json` |
+| **15m ORB Breakouts** | `python3 trader-scanner/scan.py orb` | `trader/orb_candidates.json` |
+| **FII/DII Net Flows** | `python3 trader-fii-dii/fiidii.py flows` | `trader/fiidii.json` |
+| **Bulk & Block Deals** | `python3 trader-fii-dii/fiidii.py deals` | Terminal report |
+| **Put-Call Ratio (PCR)**| `python3 trader-oi/oi.py pcr --symbol NIFTY` | Terminal report |
+| **India VIX Regime** | `python3 trader-oi/oi.py vix` | `trader/oi.json` |
+| **News & Catalysts** | `python3 trader-news/news.py market` | Terminal report |
+| **Entry Timing (5m)** | `python3 trader-entry/entry.py watch --symbol SYMBOL.NS` | `trader/setup.json` |
+| **Exit Planning** | `python3 trader-exit/exit.py plan` | `trader/plan.json` |
+| **Monte Carlo Replay** | `python3 trader-timemachine/timemachine.py replay` | `trader/timemachine.json` |
+| **INR Position Sizing**| `python3 trader-budget/size.py size --risk INR --capital INR` | `trader/order.json` |
+| **SEBI Tax & Risk Guard**| `python3 trader-risk/check.py check` | Pass/Block verdict |
+| **Paper Trade Order** | `python3 trader-broker/ticket.py paper` | `trader/trades.json` |
+
+## Indian Market Trading Rules
+1. **Trading Hours (IST)**: 09:15 to 15:30 IST.
+2. **Opening Range**: First 15 minutes (09:15 to 09:30 IST).
+3. **Mandatory 15:15 IST Square-off**: All MIS intraday positions must be closed before 15:15 IST to prevent broker penalty fees.
+4. **SEBI Leverage**: MIS orders capped at 5x maximum intraday leverage.

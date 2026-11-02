@@ -1,0 +1,28 @@
+{
+  "name": "day-trader-india",
+  "description": "12 Claude & Antigravity skills for day trading the Indian Stock Market (NSE/BSE): chart scanner, FII/DII tracking, Option Chain PCR, India VIX, entry timing, 15:15 IST auto-squareoff exit planner, and 10,000-session Monte Carlo simulator.",
+  "version": "1.0.0",
+  "author": {
+    "name": "day-trader-india contributors",
+    "url": "https://github.com/kapish/day-trader-india"
+  },
+  "homepage": "https://github.com/kapish/day-trader-india",
+  "repository": "https://github.com/kapish/day-trader-india",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "antigravity",
+    "cursor",
+    "codex",
+    "day-trading",
+    "indian-stock-market",
+    "nse",
+    "nifty50",
+    "banknifty",
+    "fii-dii",
+    "opening-range-breakout",
+    "option-chain",
+    "paper-trading"
+  ],
+  "skills": "./"
+}

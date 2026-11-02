@@ -63,20 +63,52 @@ alerts: target, stop, 15:10 IST squareoff reminder
 
 ---
 
-## Installation
+## Universal Installation (One Command)
 
-### For Claude Code
-Clone the repository and copy the skills into your Claude skills directory:
+Install across **Google Antigravity, Claude Code, Cursor, and Codex** automatically:
+
 ```bash
 git clone https://github.com/<your-username>/day-trader-india.git
-cp -r day-trader-india/trader-* ~/.claude/skills/
+cd day-trader-india
+./install.sh
 ```
 
-### For Google Antigravity (`agy`)
-Copy the skills directly into your `.agents/skills` directory:
+*(On Windows PowerShell, run: `.\install.ps1`)*
+
+---
+
+### Platform-Specific Setup
+
+#### 1. Google Antigravity (`agy`)
+Antigravity automatically loads all skills from `~/.agents/skills/`.
 ```bash
-git clone https://github.com/<your-username>/day-trader-india.git
-cp -r day-trader-india/trader-* ~/.agents/skills/
+# Target install directly:
+./install.sh antigravity
+```
+Or start a new Antigravity session and invoke `/trader-scanner`.
+
+#### 2. Claude Code
+Install as a native Claude Code plugin:
+```
+/plugin marketplace add <your-username>/day-trader-india
+/plugin install day-trader-india@day-trader-india
+```
+Or install skills directly into Claude Code:
+```bash
+./install.sh claude
+```
+
+#### 3. Cursor
+Cursor automatically detects `.cursor/rules/day-trader-india.mdc` and `AGENTS.md` in any workspace:
+```bash
+# Copy Cursor rules globally:
+./install.sh cursor
+```
+
+#### 4. Codex
+Codex reads skills from `~/.codex/skills/` and instructions from `AGENTS.md`:
+```bash
+./install.sh codex
 ```
 
 ### Standalone CLI / Chat

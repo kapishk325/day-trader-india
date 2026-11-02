@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "day-trader-india",
+  "description": "The Indian Market Day Trader skill suite for Claude Code, Antigravity, Cursor, and Codex",
+  "owner": {
+    "name": "day-trader-india contributors",
+    "url": "https://github.com/kapish/day-trader-india"
+  },
+  "plugins": [
+    {
+      "name": "day-trader-india",
+      "description": "Twelve skills for day trading the Indian Stock Market (NSE/BSE): liquid chart scanner, live FII/DII institutional flows, Put-Call Ratio (PCR), India VIX, entry timer, 15:15 IST auto-squareoff exit planner, 10,000-session Monte Carlo simulator, and SEBI tax/margin guards.",
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/kapish/day-trader-india"
+    }
+  ]
+}
