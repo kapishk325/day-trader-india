@@ -3,10 +3,15 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Market-NSE%20%2F%20BSE%20(India)-FF9933?style=for-the-badge&logo=bharatpe&logoColor=white" alt="Indian Market" />
   <a href="https://github.com/kapishk325/day-trader-india/stargazers"><img src="https://img.shields.io/github/stars/kapishk325/day-trader-india?style=for-the-badge&logo=github&color=gold" alt="GitHub Stars" /></a>
+  <a href="https://github.com/kapishk325/day-trader-india/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/kapishk325/day-trader-india/test.yml?branch=main&style=for-the-badge&label=Tests" alt="Test Status" /></a>
   <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge" alt="Apache 2.0" />
   <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3" />
   <img src="https://img.shields.io/badge/Cost-100%25%20Free%20%2F%20Zero%20API%20Key-00C853?style=for-the-badge" alt="Zero Cost" />
   <img src="https://img.shields.io/badge/Harnesses-Antigravity%20%7C%20Claude%20%7C%20Cursor%20%7C%20Codex-purple?style=for-the-badge" alt="Harnesses" />
+</p>
+
+<p align="center">
+  <img src="assets/demo.gif" alt="Day Trader India Demo" width="850" />
 </p>
 
 **Day Trader India** is a professional suite of **12 AI agent skills** engineered specifically for trading Indian equities and derivatives (**NSE / BSE**). 
@@ -373,3 +378,15 @@ This project is licensed under the **Apache License 2.0** — free for personal,
 
 ### SEBI Regulatory Disclaimer
 *This repository and its tools are intended strictly for educational, analytical, and research purposes. Day trading equities and derivatives carries substantial risk of financial loss. According to SEBI studies, over 90% of retail intraday and F&O traders lose money. Never trade with capital you cannot afford to lose. Always paper trade to validate your discipline and risk management before deploying real money.*
+
+---
+
+## Star History
+
+If you find Day Trader India helpful, please give it a ⭐ on GitHub!
+
+<p align="center">
+  <a href="https://star-history.com/#kapishk325/day-trader-india&Date">
+    <img src="https://api.star-history.com/svg?repos=kapishk325/day-trader-india&type=Date" alt="Star History Chart" width="750" />
+  </a>
+</p>

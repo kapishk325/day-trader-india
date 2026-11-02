@@ -1,0 +1,19 @@
+name: Feature Request
+description: Propose a new indicator, broker ticket format, or enhancement
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: Feature requests are welcome! Remember that all features must use standard Python libraries with zero paid API keys.
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Proposed Feature
+      description: What setup, indicator, or capability would you like to see?
+    validations:
+      required: true
+  - type: textarea
+    id: market-benefit
+    attributes:
+      label: How does this help Indian Intraday Traders?
+      description: Explain how this aligns with NSE/BSE intraday trading.
